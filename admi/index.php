@@ -1,0 +1,9 @@
+<?php
+    session_start();
+    if(isset($_SESSION['adm'])){
+        include('panel.php');
+    }
+    else{
+        include('welco.php');
+    }
+?>

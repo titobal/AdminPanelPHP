@@ -1,0 +1,4 @@
+.code { display: none }
+.nod_msg { background: #fcc; display: inline-block; padding: 2px 5px; margin-left: 5px; border-radius: 5px; }
+.nod_msg { font-weight: bold;}
+.input-append, .input-prepend { font-size: 14px; }
