@@ -1,8 +1,8 @@
 <?php
-    /*session_start();
+    if(session_status() != PHP_SESSION_ACTIVE){session_start();}
     if(isset($_SESSION['adm'])){
         header('Location: src/../');
-    }*/
+    }
 ?>
 <!doctype html>
 <html>
