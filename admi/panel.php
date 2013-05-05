@@ -1,8 +1,8 @@
 <?php
-    /*session_start();
+    if(session_status() != PHP_SESSION_ACTIVE){session_start();}
     if(!isset($_SESSION['adm'])){
         header('Location: src/../');
-    }*/
+    }
     include("../src/php/administrador.class.php");
     $ad = new Administrador();
     $a = $ad->getAdministrador();
