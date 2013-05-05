@@ -167,7 +167,9 @@
         
         private function intentaIniciarSesion(){
             $r = $this->q->q("SELECT Id FROM Administrador WHERE Correo = '$this->correo' AND Contrasena = '$this->contrasena';");
-            return $r[0][0];
+            if(count($r) == 1){
+                return $r[0][0];
+            } else { return 0; }
         }
         
         private function getCountAdministradorPorCorreo(){
