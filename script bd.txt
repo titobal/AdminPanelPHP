@@ -1,198 +1,75 @@
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
-
-CREATE SCHEMA IF NOT EXISTS `Eventos` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
-USE `Eventos` ;
-
--- -----------------------------------------------------
--- Table `Eventos`.`Administrador`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `Eventos`.`Administrador` (
-  `Id` INT(11) NOT NULL AUTO_INCREMENT ,
-  `Estado` INT(11) NOT NULL ,
-  `Nivel` INT(11) NOT NULL ,
-  `Correo` VARCHAR(350) NOT NULL ,
-  `UltimaSesion` DATETIME NOT NULL ,
-  `Contrasena` VARCHAR(300) NOT NULL ,
-  PRIMARY KEY (`Id`) )
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `Eventos`.`Usuario`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `Eventos`.`Usuario` (
-  `Id` INT(11) NOT NULL AUTO_INCREMENT ,
-  `Estado` INT(11) NOT NULL ,
-  `FechaCreacion` DATETIME NOT NULL ,
-  `UltimaSesion` DATETIME NOT NULL ,
-  PRIMARY KEY (`Id`) )
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `Eventos`.`CuentaUsuario`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `Eventos`.`CuentaUsuario` (
-  `Usuario` INT(11) NOT NULL ,
-  `Cuenta` INT(11) NOT NULL ,
-  `Fuente` VARCHAR(10) NOT NULL ,
-  `Correo` VARCHAR(350) NOT NULL ,
-  `Muro` VARCHAR(350) NOT NULL ,
-  INDEX `CuentaUsuarioUsuario_idx` (`Usuario` ASC) ,
-  CONSTRAINT `CuentaUsuarioUsuario`
-    FOREIGN KEY (`Usuario` )
-    REFERENCES `Eventos`.`Usuario` (`Id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `Eventos`.`Evento`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `Eventos`.`Evento` (
-  `Id` INT(11) NOT NULL ,
-  `Usuario` INT(11) NOT NULL ,
-  `Estado` INT(1) NOT NULL ,
-  `FechaCreacion` DATETIME NOT NULL ,
-  `FechaRealizacion` DATETIME NOT NULL ,
-  `Titulo` VARCHAR(300) NOT NULL ,
-  `Descripcion` VARCHAR(5000) NOT NULL ,
-  `SitioWeb` VARCHAR(350) NOT NULL ,
-  `Privacidad` INT(1) NOT NULL ,
-  `Direccion` VARCHAR(45) NOT NULL ,
-  PRIMARY KEY (`Id`) ,
-  INDEX `EventoUsuario_idx` (`Usuario` ASC) ,
-  CONSTRAINT `EventoUsuario`
-    FOREIGN KEY (`Usuario` )
-    REFERENCES `Eventos`.`Usuario` (`Id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `Eventos`.`InvitadosAEvento`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `Eventos`.`InvitadosAEvento` (
-  `Usuario` INT(11) NOT NULL ,
-  `Evento` INT(11) NOT NULL ,
-  `Leida` INT NOT NULL ,
-  INDEX `InvitadosAEventoUsuario_idx` (`Usuario` ASC) ,
-  INDEX `InvitadosAEventoEvento_idx` (`Evento` ASC) ,
-  CONSTRAINT `InvitadosAEventoUsuario`
-    FOREIGN KEY (`Usuario` )
-    REFERENCES `Eventos`.`Usuario` (`Id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `InvitadosAEventoEvento`
-    FOREIGN KEY (`Evento` )
-    REFERENCES `Eventos`.`Evento` (`Id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `Eventos`.`BloqueoEvento`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `Eventos`.`BloqueoEvento` (
-  `Evento` INT NOT NULL ,
-  `Administrador` INT NOT NULL ,
-  `Mensaje` VARCHAR(400) NOT NULL ,
-  `Fecha` DATETIME NOT NULL ,
-  INDEX `BloqueoEventoEvento_idx` (`Evento` ASC) ,
-  INDEX `BloqueoEventoAdministrador_idx` (`Administrador` ASC) ,
-  CONSTRAINT `BloqueoEventoEvento`
-    FOREIGN KEY (`Evento` )
-    REFERENCES `Eventos`.`Evento` (`Id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `BloqueoEventoAdministrador`
-    FOREIGN KEY (`Administrador` )
-    REFERENCES `Eventos`.`Administrador` (`Id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `Eventos`.`MensajeAdministradorUsuario`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `Eventos`.`MensajeAdministradorUsuario` (
-  `Administrador` INT NOT NULL ,
-  `Usuario` INT NOT NULL ,
-  `Leido` INT NOT NULL ,
-  `Fecha` DATETIME NOT NULL ,
-  `Mensaje` VARCHAR(400) NOT NULL ,
-  INDEX `MensajeAdministradorUsuarioAdministrador_idx` (`Administrador` ASC) ,
-  INDEX `MensajeAdministradorUsuarioUsuario_idx` (`Usuario` ASC) ,
-  CONSTRAINT `MensajeAdministradorUsuarioAdministrador`
-    FOREIGN KEY (`Administrador` )
-    REFERENCES `Eventos`.`Administrador` (`Id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `MensajeAdministradorUsuarioUsuario`
-    FOREIGN KEY (`Usuario` )
-    REFERENCES `Eventos`.`Usuario` (`Id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `Eventos`.`MensajeUsuarioAdministrador`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `Eventos`.`MensajeUsuarioAdministrador` (
-  `Usuario` INT NOT NULL ,
-  `Administrador` INT NOT NULL ,
-  `Leido` INT NOT NULL ,
-  `Fecha` DATETIME NOT NULL ,
-  `Mensaje` VARCHAR(400) NOT NULL ,
-  INDEX `MensajeUsuarioAdministradorUsuario_idx` (`Usuario` ASC) ,
-  INDEX `MensajeUsuarioAdministradorAdministrador_idx` (`Administrador` ASC) ,
-  CONSTRAINT `MensajeUsuarioAdministradorUsuario`
-    FOREIGN KEY (`Usuario` )
-    REFERENCES `Eventos`.`Usuario` (`Id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `MensajeUsuarioAdministradorAdministrador`
-    FOREIGN KEY (`Administrador` )
-    REFERENCES `Eventos`.`Administrador` (`Id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `Eventos`.`ComentarioDeEvento`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `Eventos`.`ComentarioDeEvento` (
-  `Evento` INT NOT NULL ,
-  `Usuario` INT NOT NULL ,
-  `Leido` INT NOT NULL ,
-  `Estado` INT NOT NULL ,
-  `Editado` INT NOT NULL ,
-  `Fecha` DATETIME NOT NULL ,
-  `Mensaje` VARCHAR(400) NOT NULL ,
-  INDEX `ComentarioDeEventoEvento_idx` (`Evento` ASC) ,
-  INDEX `ComentarioDeEventoUsuario_idx` (`Usuario` ASC) ,
-  CONSTRAINT `ComentarioDeEventoEvento`
-    FOREIGN KEY (`Evento` )
-    REFERENCES `Eventos`.`Evento` (`Id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `ComentarioDeEventoUsuario`
-    FOREIGN KEY (`Usuario` )
-    REFERENCES `Eventos`.`Usuario` (`Id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
-
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+
+
+CREATE SCHEMA IF NOT EXISTS `Admin` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
+
+USE `Admin` ;
+
+
+
+-- -----------------------------------------------------
+
+-- Table `Admin`.`Administrador`
+
+-- -----------------------------------------------------
+
+CREATE  TABLE IF NOT EXISTS `Admin`.`Administrador` (
+
+  `Id` INT(11) NOT NULL AUTO_INCREMENT ,
+
+  `Estado` INT(11) NOT NULL ,
+
+  `Nivel` INT(11) NOT NULL ,
+
+  `Correo` VARCHAR(350) NOT NULL ,
+
+  `UltimaSesion` DATETIME NOT NULL ,
+
+  `Contrasena` VARCHAR(300) NOT NULL ,
+
+  PRIMARY KEY (`Id`) )
+
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+
+-- Table `Admin`.`CodigoRecuperacion`
+
+-- -----------------------------------------------------
+
+CREATE  TABLE IF NOT EXISTS `Admin`.`CodigoRecuperacion` (
+
+  `Codigo` VARCHAR(30) NOT NULL ,
+
+  `Fecha` DATETIME NOT NULL ,
+
+  `Id` INT NOT NULL ,
+
+  `Objeto` INT NOT NULL ,
+
+  PRIMARY KEY (`Codigo`) )
+
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+
+-- INSERT Admin
+
+-- -----------------------------------------------------
+
+INSERT INTO Admin VALUES (1,1,0,'admin@admin.cl',NULL,'c894c894c898aad8aad8aae5bce5bce5bc27bc27bc2731573157315');
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
