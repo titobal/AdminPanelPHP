@@ -1,8 +1,8 @@
 <?php
-    session_start();
+    /*session_start();
     if(!isset($_SESSION['adm'])){
         header('Location: src/../');
-    }
+    }*/
     include("../src/php/administrador.class.php");
     $ad = new Administrador();
     $a = $ad->getAdministrador();
@@ -31,7 +31,7 @@
         <link href="../src/bootstrap/css/animate-custom.min.css" type="text/css" rel="stylesheet"/>
         <link href="src/panel.css" type="text/css" rel="stylesheet"/>
     </head>
-    <body class="preview" style="background-image: url('http://localhost/eventos/images/shattered.png');background-repeat: repeat;">
+    <body class="preview" style="background-image: url('../images/shattered.png');background-repeat: repeat;">
         <!--header-->
         <div style="display:none" class="navbar navbar-inverse navbar-fixed-top">
             <div class="navbar-inner">
