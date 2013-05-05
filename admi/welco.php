@@ -1,8 +1,8 @@
 <?php
-    session_start();
+    /*session_start();
     if(isset($_SESSION['adm'])){
         header('Location: src/../');
-    }
+    }*/
 ?>
 <!doctype html>
 <html>
@@ -21,7 +21,7 @@
         <link href="../src/bootstrap/css/animate-custom.min.css" type="text/css" rel="stylesheet"/>
         <style>#loading{display:none;z-index:9999;position: fixed;top: 100px;left: 0;right: 0;margin: auto;width: 300px;background-color: #fff;padding: 20px;border-radius: 5px;box-shadow: 0 0 10px rgba(0, 0, 0, 0.34);}</style>
     </head>
-    <body style="background-image: url('http://localhost/eventos/images/shattered.png');background-repeat: repeat;"><br/><br/><br/>
+    <body style="background-image: url('../images/shattered.png');background-repeat: repeat;"><br/><br/><br/>
         <div class="container">
             <div class="well" style="background-color:#fff;display:none;height:271px">
                 <form class="form-horizontal" style="display:none">
