@@ -28,7 +28,7 @@ CREATE  TABLE IF NOT EXISTS `Admin`.`Administrador` (
 
   `Correo` VARCHAR(350) NOT NULL ,
 
-  `UltimaSesion` DATETIME NOT NULL ,
+  `UltimaSesion` DATETIME ,
 
   `Contrasena` VARCHAR(300) NOT NULL ,
 
