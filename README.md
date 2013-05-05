@@ -16,7 +16,7 @@ para insertar un administrador lo puede hacer con:
 
 --Esta línea de código aparece en el archivo script bd.txt
 
-INSERT INTO Admin VALUES (1,1,0,'admin@admin.cl',NULL,'c894c894c898aad8aad8aae5bce5bce5bc27bc27bc2731573157315');
+INSERT INTO Administrador VALUES (1,1,0,'admin@admin.cl',NULL,'c894c894c898aad8aad8aae5bce5bce5bc27bc27bc2731573157315');
 
 Las credenciales son:
 
