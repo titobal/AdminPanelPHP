@@ -38,6 +38,35 @@
             return false;
         }
         
+        public function short($ret, $column, $msg, $vali, $value, $min=null, $max=null){
+            $test = false;
+            switch($vali){
+                case "validaTexto":
+                    $test = $this->validaTexto($value, $min, $max);
+                break;
+                case "validaTextoNumero":
+                    $test = $this->validaTextoNumero($value, $min, $max);
+                break;
+                case "validaTextoNumeroSU":
+                    $test = $this->validaTextoNumeroSU($value, $min, $max);
+                break;
+                case "validaNumero":
+                    $test = $this->validaNumero($value, $min, $max);
+                break;
+                case "validarMail":
+                    $test = $this->validarMail($value);
+                break;
+            }
+            if($test){
+                $ret[$column] = "ok";
+            }else{
+                $ret[$column] = "bad";
+                $ret["err"] = "1";
+                $ret["msg"] = $msg;
+            }
+            return $ret;
+        }
+        
         //validar un mail
         public function validarMail($valor){
             if(filter_var($valor, FILTER_VALIDATE_EMAIL) === false){return false;}
