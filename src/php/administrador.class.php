@@ -18,64 +18,48 @@
         
         public function updateAttr($id, $m){
             $ret = array("err"=>"0","id"=>"0","msg"=>"0","obj"=>"");
-            if($this->v->validaNumero($id)){
-                if($id == $_SESSION["adm"]){
-                    $ret["err"]="1";$ret["msg"]="No puede modificar sus propios atributos.";
-                }
-                else{
-                    if((int)$this->getEstado() == 1){
-                        if((int)$this->getNivel() == 0){
-                            switch((int)$m){
-                                case 1://estado
-                                    $this->q->s("UPDATE Administrador SET Estado = CASE WHEN Estado = 1 THEN 0 ELSE 1 END WHERE Id = $id;");
-                                    $ret["err"]="0";$ret["msg"]="ok";$ret["obj"]=$this->getAdministrador($id);
-                                break;
-                                case 2://nivel
-                                    $this->q->s("UPDATE Administrador SET Nivel = CASE WHEN Nivel = 1 THEN 0 ELSE 1 END WHERE Id = $id;");
-                                    $ret["err"]="0";$ret["msg"]="ok";$ret["obj"]=$this->getAdministrador($id);
-                                break;
-                                case 3://delete
-                                    $this->q->s("DELETE FROM Administrador WHERE Id = $id AND Nivel = 1;");
-                                    if($this->q->affectedRows == 1){
-                                        $ret["err"]="0";$ret["msg"]="ok";$ret["obj"]=array("Id"=>"$id");
-                                    }
-                                    else{
-                                        $ret["err"]="1";$ret["msg"]="Asegurese de que el aministrador no es Super Administrador.";
-                                    }
-                                break;
-                                default:
-                                    $ret["err"]="1";$ret["msg"]="Valor erroneo.";
-                                break;
-                            }
-                        }
-                        else{
-                           $ret["err"]="1";$ret["msg"]="No tiene permisos suficientes para realizar esta acci&oacute;n."; 
-                        }
+            if(!$this->v->validaNumero($id)){$ret["err"]="1";$ret["msg"]="Valor erroneo.";return $ret;}
+            if($id == $_SESSION["adm"]){$ret["err"]="1";$ret["msg"]="No puede modificar sus propios atributos.";return $ret;}
+            if((int)$this->getEstado() != 1){
+                $ret["err"]="1";$ret["msg"]="No est&aacute; autorizado a realizar esta acci&oacute;n.";return $ret;}
+            if((int)$this->getNivel() != 0){
+                $ret["err"]="1";$ret["msg"]="No tiene permisos suficientes para realizar esta acci&oacute;n.";return $ret;}
+            switch((int)$m){
+                case 1://estado
+                    $this->q->s("UPDATE Administrador SET Estado = CASE WHEN Estado = 1 THEN 0 ELSE 1 END WHERE Id = $id;");
+                    $ret["err"]="0";$ret["msg"]="ok";$ret["obj"]=$this->getAdministrador($id);
+                break;
+                case 2://nivel
+                    $this->q->s("UPDATE Administrador SET Nivel = CASE WHEN Nivel = 1 THEN 0 ELSE 1 END WHERE Id = $id;");
+                    $ret["err"]="0";$ret["msg"]="ok";$ret["obj"]=$this->getAdministrador($id);
+                break;
+                case 3://delete
+                    $this->q->s("DELETE FROM Administrador WHERE Id = $id AND Nivel = 1;");
+                    if($this->q->affectedRows == 1){
+                        $ret["err"]="0";$ret["msg"]="ok";$ret["obj"]=array("Id"=>"$id");
                     }
                     else{
-                        $ret["err"]="1";$ret["msg"]="No est&aacute; autorizado a realizar esta acci&oacute;n.";
+                        $ret["err"]="1";$ret["msg"]="Asegurese de que el aministrador no es Super Administrador.";
                     }
-                }
-            }
-            else{
-                $ret["err"]="1";$ret["msg"]="Valor erroneo.";
+                break;
+                default:
+                    $ret["err"]="1";$ret["msg"]="Valor erroneo.";
+                break;
             }
             return $ret;
         }
         
         public function guardaCodigo($correo, $code){
-            $ret = array("err"=>"0", "correo"=>"", "code"=>"", "msg"=> "");
-            if($this->setCorreo($correo)){$ret["correo"] = "ok";}
-                else{$ret["err"] = "1"; $ret["msg"] = "Correo Incorrecto."; $ret["correo"] = "bad";return $ret;}
-            if($this->v->validaTextoNumeroSU($code,30,30)){$ret["code"] = "ok";}
-                else{$ret["err"] = "1"; $ret["msg"] = "C&oacute;digo incorrecto."; $ret["pass"] = "bad";return $ret;}
+            $ret = array("err"=>"0", "correo"=>"", "code"=>"", "msg"=> "Error inesperado.");
+            $ret = $this->v->short($ret, "correo", 'Correo Incorrecto.','validarMail',$correo);
+            $ret = $this->v->short($ret, "code", 'C&oacute;digo incorrecto.','validaTextoNumeroSU',$code,30,30);
+            if($ret["err"] !== "0"){return $ret;}
             $r = $this->getCountAdministradorPorCorreo($this->correo);
             if((int)$r == 1){
                 $r = $this->q->q("SELECT * FROM Administrador WHERE Correo = '$this->correo';");
                 $this->q->s("DELETE FROM CodigoRecuperacion WHERE Objeto = 0 AND Id = ".$r[0]["Id"].";");
                 $this->q->s("INSERT INTO CodigoRecuperacion VALUES ('$code',sysdate(),".$r[0]["Id"].",0);");
-                if($this->q->affectedRows == 1){
-                    $ret["err"] = "0";$ret["msg"]="ok";return $ret;
+                if($this->q->affectedRows == 1){$ret["err"] = "0";$ret["msg"]="ok";return $ret;
                 }else{$ret["err"]="1";$ret["msg"]="Ha ocurrido un error inesperado al intentar ejecutar la operaci&oacute;n, por favor vuelva a intentarlo m&aacute;s tarde.";return $ret; }
             }else{$ret["err"] = "1"; $ret["msg"] = "Parece que el correo no est&aacute; registrado en la base de datos."; $ret["correo"] = "bad";return $ret;}
             return $ret;
