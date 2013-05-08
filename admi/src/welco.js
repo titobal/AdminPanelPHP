@@ -30,14 +30,12 @@ var Submits = function(){
                         $("#modalRec").modal("show");
                     };
                     var funb = function(){
-                        //window.location = "#";
                         s.v.G = {};
                         $("form button").button("reset");
                     };
                     s.ajaxSend(data,fun,funb);
                 }).fail(me.ajaxFail);
             }else{
-                //window.location = "#";
                 s.v.G = {};
                 alert("Al parecer el c&oacute;digo no es correcto, puede solicitar uno nuevo.");
             }
@@ -57,7 +55,7 @@ var Submits = function(){
             var fun = function(){
                 $(".well").attr("class","well animated fadeOutLeft");
                 alert(s.mensajes.m4);
-                window.location.reload();
+                $(".container form").attr({'method':'POST','action':''}).unbind("submit").trigger("submit");
             };
             s.ajaxSend(data, fun);
             $("form").eq(0).bind("submit", s.subIniSes);
@@ -109,6 +107,7 @@ var Submits = function(){
                     var func = function(){
                         $("#modalRec").modal("hide");
                         alert("Ya puede utilizar su nueva contraseña, el c&oacute;digo ya no puede ser utilizado nuevamente.");
+                        s.v.G = {};window.location='#';
                     };
                     s.ajaxSend(data, func);
                 }).fail(s.ajaxFail);
