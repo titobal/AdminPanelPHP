@@ -51,8 +51,8 @@
         
         public function guardaCodigo($correo, $code){
             $ret = array("err"=>"0", "correo"=>"", "code"=>"", "msg"=> "Error inesperado.");
-            $ret = $this->v->short($ret, "correo", 'Correo Incorrecto.','validarMail',$correo);
-            $ret = $this->v->short($ret, "code", 'C&oacute;digo incorrecto.','validaTextoNumeroSU',$code,30,30);
+            if($this->setCorreo($correo)){$ret['correo']='ok';}else{$ret['err']='1';$ret['correo']='bad';$ret['msg']='El correo no es correcto';}
+            if($this->v->validaTextoNumeroSU($code,30,30)){$ret['code']='ok';}else{$ret['err']='1';$ret['code']='bad';$ret['msg']='No se ha logrado generar el c&oacute;digo requerido, itentelo de nuevo m&aacute;s tarde.';}
             if($ret["err"] !== "0"){return $ret;}
             $r = $this->getCountAdministradorPorCorreo($this->correo);
             if((int)$r == 1){
