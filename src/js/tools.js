@@ -53,14 +53,19 @@ var Tools = function(){
         msg : function(msg){tools.pnotify.bottomright("Error", msg, "error");},
         noCon : function(){tools.pnotify.bottomright("Error", tools.errText.noCom, "error");}
     };
-    this.ajaxDone = function(data, fun){
+    this.ajaxDone = function(data, fun, funb){
         console.log(data);
         try{
             var d = JSON.parse(data);
             if(d.err === "0"){
-                fun(d);
+                if(typeof fun === "function"){
+                    fun(d);
+                }
             }
             else{
+                if(typeof funb === "function"){
+                    funb(d);
+                }
                 tools.msg.msg(d.msg);
             }
         }
@@ -74,9 +79,7 @@ var Tools = function(){
     };
     this.printDate = function(d){
         var temp = d.split(" ");
-        var date = temp[0].split("-").reverse();
-        var nd = date[0] + "-" + date[1] + "-" + date[2] + " " + temp[1];
-        return nd;
+        return temp[0].split("-").reverse().join('-') + " " + temp[1];
     };
 };
 
